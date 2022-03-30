@@ -4,9 +4,11 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"regexp"
 	"strconv"
+	"time"
 
 	"github.com/fatih/color"
 )
@@ -130,7 +132,15 @@ func main() {
 	fmt.Println("Filter by tag:" + tag)
 
 	for {
-		text, _ := reader.ReadString('\n')
+		text, err := reader.ReadString('\n')
+		if err == io.EOF {
+			return
+		}
+
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+
 		kind := detectFormat(text)
 
 		if filterProcess {
@@ -142,6 +152,8 @@ func main() {
 				continue
 			}
 		}
+
+		text = time.Now().Format(time.StampMilli) + "| " + text
 
 		switch kind.Type {
 		case "D":
