@@ -8,6 +8,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/fatih/color"
@@ -113,10 +114,14 @@ func detectFormat(inputLine string) *LogcatLine {
 	}
 }
 
-var tag string
+var (
+	tag    string
+	filter string
+)
 
 func init() {
 	flag.StringVar(&tag, "tag", "", "-tag com.yourcompany.yourapp")
+	flag.StringVar(&filter, "filter", "", "-filter Networking")
 }
 
 func main() {
@@ -129,7 +134,16 @@ func main() {
 		filterProcess = true
 	}
 
-	fmt.Println("Filter by tag:" + tag)
+	filterText := false
+
+	if len(tag) > 0 {
+		fmt.Println("tag:" + tag)
+	}
+	if len(filter) > 0 {
+		filterText = true
+		filter = strings.ToLower(filter)
+		fmt.Println("filter:" + filter)
+	}
 
 	for {
 		text, err := reader.ReadString('\n')
@@ -149,6 +163,12 @@ func main() {
 				currentPid = process.Pid
 			}
 			if kind.Pid != currentPid {
+				continue
+			}
+		}
+
+		if filterText {
+			if !strings.Contains(strings.ToLower(text), filter) {
 				continue
 			}
 		}

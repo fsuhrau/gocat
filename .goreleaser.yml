@@ -1,30 +1,15 @@
 # .goreleaser.yml
-# Build customization
-builds:
-  - binary: gocat
-    goos:
-      - darwin
-    goarch:
-      - amd64
-brew:
-  # Reporitory to push the tap to.
-  github:
-    owner: fsuhrau
-    name: homebrew-tap
-
-  # Folder inside the repository to put the formula.
-  # Default is the root folder.
-  folder: Formula
-
-  # Caveats for the user of your binary.
-  # Default is empty.
-  caveats: "adb logcat | gocat"
-
-  # Your app's homepage
-  # Default is empty
-  homepage: "https://github.com/fsuhrau/gocat"
-
-  # Your app's description
-  # Default is empty
-  description: "gocat add coloring for logcat output"
- 
+brews:
+  -
+    name: gocat
+    tap:
+      owner: fsuhrau
+      name: homebrew-tap
+    folder: Formula
+    caveats: "adb logcat | gocat -tag com.yourcompany.appid -filter Networking"
+    homepage: "https://github.com/fsuhrau/gocat"
+    # Your app's description
+    # Default is empty
+    description: "gocat add coloring for logcat output"
+    # license
+    license: "MIT"
